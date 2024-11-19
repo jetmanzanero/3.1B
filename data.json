@@ -1,0 +1,31 @@
+[
+    {
+      "studentNumber": "12345",
+      "studentName": "John Doe",
+      "tp1": 50,
+      "act1": 25,
+      "assign": 20,
+      "quiz1": 18,
+      "grpAct1": 30,
+      "q1": 10,
+      "q2": 15,
+      "q3": 20,
+      "q4": 25,
+      "exam": 50
+    },
+    {
+      "studentNumber": "67890",
+      "studentName": "Jane Smith",
+      "tp1": 40,
+      "act1": 30,
+      "assign": 30,
+      "quiz1": 35,
+      "grpAct1": 20,
+      "q1": 12,
+      "q2": 18,
+      "q3": 22,
+      "q4": 28,
+      "exam": 45
+    }
+  ]
+  
