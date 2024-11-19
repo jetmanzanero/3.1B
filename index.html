@@ -150,11 +150,11 @@
   <script>
     let studentData = [];
 
-    // URL to fetch the Excel file from GitHub
-    const EXCEL_FILE_URL = "https://jetmanzanero.github.io/3.1B/GradeData.xlsx";
+    // URL to fetch the Excel file from GitHub using CORS proxy
+    const EXCEL_FILE_URL = "https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/jetmanzanero/3.1B/main/GradeData.xlsx";
 
     // Fetch the Excel file and parse it
-    fetch(fileUrl)
+    fetch(EXCEL_FILE_URL)
       .then(response => response.arrayBuffer())
       .then(data => {
         const workbook = XLSX.read(data, { type: 'array' });
