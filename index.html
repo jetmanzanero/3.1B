@@ -11,171 +11,119 @@
   <!-- Chart.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* Add your styles here */
     body {
       background-color: #f4f6f8;
       font-family: 'Arial', sans-serif;
-      color: #333;
     }
     .container {
       max-width: 1200px;
-      margin-top: 30px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     h1, h3 {
       color: #2c3e50;
+      text-align: center;
     }
     .table {
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
     }
     .table thead {
-      background-color: #45a049;
-      color: white;
+      background-color: #007bff;
+      color: #fff;
     }
     .table th, .table td {
       text-align: center;
-      padding: 15px;
-      font-size: 14px;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    .table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
     .table tbody tr:hover {
       background-color: #f1f1f1;
     }
-    .table-bordered {
-      border: 1px solid #dee2e6;
-    }
-    .table-bordered th, .table-bordered td {
-      border: 1px solid #dee2e6;
-    }
-    .summary {
-      font-size: 18px;
-      margin-top: 30px;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-    }
-    .summary p {
-      margin: 0;
-    }
-    .upload-bar, .search-bar, .export-bar {
+    .search-bar {
       margin-bottom: 20px;
-    }
-    .color-legend {
-      font-size: 20px;
-      margin-bottom: 20px;
-      background-color: #f9f9f9;
-      padding: 15px;
-      border-radius: 8px;
-    }
-    .color-legend .color-box {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
     }
     #chart-container {
       margin-top: 40px;
       max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: auto;
     }
   </style>
+  
 </head>
 <body>
   <div class="container">
     <h1 class="text-center mb-4">Grade Report for BSIT 3.1 B</h1>
     <h3 class="text-center mb-5">Subject: Professional Issues</h3>
 
-    <!-- File Upload Input -->
-    <div class="upload-bar">
-      <label for="fileInput" class="form-label">Upload Excel File:</label>
-      <input type="file" id="fileInput" class="form-control" accept=".xlsx, .xls" />
-    </div>
-
     <!-- Search Bar -->
     <div class="search-bar">
       <input type="text" id="searchInput" class="form-control" placeholder="Search by Student Number or Name">
-    </div>
-
-    <!-- Color Legend -->
-    <div class="color-legend">
-      <p><strong>Equivalent:</strong></p>
-      <div><span class="color-box" style="background-color: lightgreen;"></span> Activity Submitted</div>
-      <div><span class="color-box" style="background-color: lightcoral;"></span> Activity Not Submitted</div>
-      <div><span class="color-box" style="background-color: #80C4E9;"></span> No Data</div>
-    </div>
-
-    <!-- Export to Excel Button -->
-    <div class="export-bar">
-      <button id="exportButton" class="btn btn-primary">Export to Excel</button>
     </div>
 
     <!-- Grade Report Table -->
     <table class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th scope="col">Student Number</th>
-          <th scope="col">Student Name</th>
-          <th scope="col" colspan="5" class="text-center">PT/LAB EXERCISES (30%)</th>
-          <th scope="col" colspan="4" class="text-center">QUIZZES (20%)</th>
-          <th scope="col" colspan="1" class="text-center">EXAM (50%)</th>
-        </tr>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col"></th>
-          <th scope="col">06TP1 (60)</th>
-          <th scope="col">05Act1 (30)</th>
-          <th scope="col">05Assign (30)</th>
-          <th scope="col">05Quiz1 (38)</th>
-          <th scope="col">06GrpAct1 (30)</th>
-          <th scope="col">Q1</th>
-          <th scope="col">Q2</th>
-          <th scope="col">Q3</th>
-          <th scope="col">Q4</th>
-          <th scope="col">EX</th>
+          <th>Student Number</th>
+          <th>Student Name</th>
+          <th>06TP1</th>
+          <th>05Act1</th>
+          <th>05Assign</th>
+          <th>05Quiz1</th>
+          <th>06GrpAct1</th>
+          <th>Q1</th>
+          <th>Q2</th>
+          <th>Q3</th>
+          <th>Q4</th>
+          <th>EX</th>
         </tr>
       </thead>
       <tbody id="studentTableBody">
-        <!-- Table rows will be inserted dynamically -->
+        <!-- Table rows will be dynamically populated -->
       </tbody>
     </table>
 
-    <div class="summary">
-      <p><strong>Note:</strong> This report contains the grades of students for the subject Professional Issues. Please review the individual performance.</p>
-    </div>
-
-    <!-- Chart Container -->
-    <div id="chart-container">
+    <!-- Chart -->
+    <div id="chart-container" style="max-width: 800px; margin: auto;">
       <canvas id="gradesChart"></canvas>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
-  <!-- Excel Handling, Search and Export Script -->
+  <!-- Scripts -->
   <script>
-    let studentData = [];
-
-    // URL to fetch the Excel file from GitHub
     const EXCEL_FILE_URL = "https://jetmanzanero.github.io/3.1B/GradeData.xlsx";
 
-    // Fetch the Excel file and parse it
-    fetch(fileUrl)
-      .then(response => response.arrayBuffer())
-      .then(data => {
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        
-        studentData = processTableData(jsonData);
-        populateTable(studentData);
-        renderChart(studentData);  // Render chart after the table is populated
-      });
+    let studentData = [];
+
+    // Fetch Excel file from GitHub and process it
+    async function fetchExcelFile() {
+      const response = await fetch(EXCEL_FILE_URL);
+      if (!response.ok) {
+        console.error("Failed to fetch Excel file.");
+        return;
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      studentData = processTableData(jsonData);
+      populateTable(studentData);
+      renderChart(studentData);
+    }
 
     function processTableData(data) {
       return data.slice(1).map(row => ({
-        studentNumber: row[0] || '',
-        studentName: row[1] || '',
+        studentNumber: row[0] || "",
+        studentName: row[1] || "",
         tp1: row[2],
         act1: row[3],
         assign: row[4],
@@ -190,67 +138,59 @@
     }
 
     function populateTable(data) {
-      const tableBody = document.getElementById('studentTableBody');
-      tableBody.innerHTML = '';
-
-      if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="13" class="text-center">No results found</td></tr>';
-        return;
-      }
-
-      data.forEach(student => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+      const tableBody = document.getElementById("studentTableBody");
+      tableBody.innerHTML = data.map(student => `
+        <tr>
           <td>${student.studentNumber}</td>
           <td>${student.studentName}</td>
-          ${formatCell(student.tp1)}
-          ${formatCell(student.act1)}
-          ${formatCell(student.assign)}
-          ${formatCell(student.quiz1)}
-          ${formatCell(student.grpAct1)}
-          ${formatCell(student.q1)}
-          ${formatCell(student.q2)}
-          ${formatCell(student.q3)}
-          ${formatCell(student.q4)}
-          ${formatCell(student.exam)}
-        `;
-        tableBody.appendChild(tr);
-      });
-    }
-
-    function formatCell(value) {
-      if (value === undefined || value === null) {
-        return '<td style="background-color: #80C4E9;">No Data</td>';
-      }
-      return `<td>${value}</td>`;
+          <td>${student.tp1 || "-"}</td>
+          <td>${student.act1 || "-"}</td>
+          <td>${student.assign || "-"}</td>
+          <td>${student.quiz1 || "-"}</td>
+          <td>${student.grpAct1 || "-"}</td>
+          <td>${student.q1 || "-"}</td>
+          <td>${student.q2 || "-"}</td>
+          <td>${student.q3 || "-"}</td>
+          <td>${student.q4 || "-"}</td>
+          <td>${student.exam || "-"}</td>
+        </tr>
+      `).join("");
     }
 
     function renderChart(data) {
-      const ctx = document.getElementById('gradesChart').getContext('2d');
-      const chartData = {
-        labels: data.map(student => student.studentName),
-        datasets: [{
-          label: 'Grades',
-          data: data.map(student => student.exam),
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
-      };
-
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: chartData,
+      const ctx = document.getElementById("gradesChart").getContext("2d");
+      const chartData = data.map(student => student.exam || 0);
+      const labels = data.map(student => student.studentName);
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Exam Scores",
+            data: chartData,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          }]
+        },
         options: {
           scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        });
-      };
+            y: { beginAtZero: true },
+          },
+        }
+      });
     }
 
+    document.getElementById("searchInput").addEventListener("input", function(event) {
+      const searchValue = event.target.value.toLowerCase();
+      const filteredData = studentData.filter(student =>
+        student.studentNumber.toLowerCase().includes(searchValue) ||
+        student.studentName.toLowerCase().includes(searchValue)
+      );
+      populateTable(filteredData);
+    });
+
+    fetchExcelFile(); // Initial fetch of data from GitHub
   </script>
 </body>
 </html>
